@@ -13,9 +13,8 @@ let pageNumber = 1;
 
 rightBtn.addEventListener("click", nextPage);
 
-function nextPage(){
-
-  console.log("rait")
+function nextPage() {
+  console.log("rait");
 }
 
 // changes page to previous page
@@ -39,8 +38,7 @@ async function getData(e) {
     const reposResponse = await reposRequest.json();
 
     // Check the amount of pages needed for the repos
-    const reposPageAmount = Math.ceil(reposResponse.length / 3)
-
+    const reposPageAmount = Math.ceil(reposResponse.length / 3);
 
     // Add profile picture
     image.src = response["avatar_url"];
@@ -50,10 +48,6 @@ async function getData(e) {
     userName.textContent = response["login"];
     website.textContent = response["blog"];
 
-    
-    
-    
-    
     console.log(reposResponse);
     console.log(response);
   } catch (e) {
