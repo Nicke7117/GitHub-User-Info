@@ -5,6 +5,7 @@ const userName = document.getElementById("username");
 const website = document.getElementById("website");
 const leftBtn = document.getElementById("left");
 const rightBtn = document.getElementById("right");
+let click = false;
 
 // The page number the user is currently on
 let pageNumber = 1;
@@ -32,6 +33,8 @@ async function getData(e) {
     const request = await fetch("https://api.github.com/users/" + inputValue);
     const response = await request.json();
 
+    
+
     // Fetching repos of the current user
     const reposRequest = await fetch(response["repos_url"]);
     //returns repos in an array
@@ -40,6 +43,25 @@ async function getData(e) {
     // Check the amount of pages needed for the repos
     const reposPageAmount = Math.ceil(reposResponse.length / 3);
 
+    if (click === true) {
+      // delete the recent repo names
+      for (let i = 0; i < 3; i++) {
+        let repos = document.getElementById("repo" + i);
+        repos.remove();
+      }
+
+      console.log("hfaw")
+    }
+
+    // create elements with the repo names
+    for (let i = 0; i < 3; i++) {
+      let repoName = document.createElement("P");
+      repoName.className = "repo-name";
+      repoName.textContent = reposResponse[i]["name"];
+      document.getElementById("repo" + i).appendChild(repoName);
+    }
+
+    click = true;
     // Add profile picture
     image.src = response["avatar_url"];
 
@@ -48,7 +70,8 @@ async function getData(e) {
     userName.textContent = response["login"];
     website.textContent = response["blog"];
 
-    console.log(reposResponse);
+    console.log(click);
+    console.log(reposResponse[0]["name"]);
     console.log(response);
   } catch (e) {
     console.log("Error! " + e);
