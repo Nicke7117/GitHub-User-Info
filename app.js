@@ -5,7 +5,7 @@ const userName = document.getElementById("username");
 const website = document.getElementById("website");
 const leftBtn = document.getElementById("left");
 const rightBtn = document.getElementById("right");
-let click = false;
+let firstSearch = true;
 
 // The page number the user is currently on
 let pageNumber = 1;
@@ -32,8 +32,16 @@ async function getData(e) {
     const inputValue = document.getElementById("input").value;
     const request = await fetch("https://api.github.com/users/" + inputValue);
     const response = await request.json();
+    console.log(inputValue);
 
-    
+    const earlierInput = sessionStorage.getItem("latest-search");
+
+    if (firstSearch === true) {
+
+      console.log(sessionStorage.getItem("latest-search"));
+    }
+    console.log(inputValue === earlierInput);
+    console.log("earlier input 1234" + sessionStorage.getItem("latest-search"));
 
     // Fetching repos of the current user
     const reposRequest = await fetch(response["repos_url"]);
@@ -43,36 +51,50 @@ async function getData(e) {
     // Check the amount of pages needed for the repos
     const reposPageAmount = Math.ceil(reposResponse.length / 3);
 
-    if (click === true) {
+    // If same user is searched for multiple times add the repos only the first time
+    if (firstSearch) {
+      console.log("inputvalue " + inputValue);
+      console.log("earlier input " + earlierInput);
+      console.log("first search made by the user")
+      sessionStorage.setItem("latest-search", "");
+      firstSearch = false;
+      for (let i = 0; i < 3; i++) {
+        let repoName = document.createElement("P");
+        repoName.className = "repo-name";
+        repoName.textContent = reposResponse[i]["name"];
+        document.getElementById("repo" + i).appendChild(repoName);
+      }
+    } else if (inputValue === earlierInput) {
+      console.log("user made same search")
+    } else {
       // delete the recent repo names
+      console.log("user made different search")
+      console.log("eleeeeee");
       for (let i = 0; i < 3; i++) {
         let repos = document.getElementById("repo" + i);
         repos.remove();
       }
 
-      console.log("hfaw")
+      // create elements with the repo names
+      for (let i = 0; i < 3; i++) {
+        let repoName = document.createElement("P");
+        repoName.className = "repo-name";
+        repoName.textContent = reposResponse[i]["name"];
+        document.getElementById("repo" + i).appendChild(repoName);
+      }
     }
 
-    // create elements with the repo names
-    for (let i = 0; i < 3; i++) {
-      let repoName = document.createElement("P");
-      repoName.className = "repo-name";
-      repoName.textContent = reposResponse[i]["name"];
-      document.getElementById("repo" + i).appendChild(repoName);
-    }
-
-    click = true;
+    
     // Add profile picture
     image.src = response["avatar_url"];
 
+    //add the most recent search to local storage to wait for comparison
+    sessionStorage.setItem("latest-search", inputValue);
     // Add name, username and website
     name1.textContent = response["name"];
     userName.textContent = response["login"];
     website.textContent = response["blog"];
 
-    console.log(click);
-    console.log(reposResponse[0]["name"]);
-    console.log(response);
   } catch (e) {
     console.log("Error! " + e);
   }
