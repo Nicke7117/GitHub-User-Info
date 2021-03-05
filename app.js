@@ -47,6 +47,7 @@ async function getData(e) {
     const reposRequest = await fetch(response["repos_url"]);
     //returns repos in an array
     const reposResponse = await reposRequest.json();
+    console.log("erweop", reposResponse)
 
     // Check the amount of pages needed for the repos
     const reposPageAmount = Math.ceil(reposResponse.length / 3);
@@ -69,16 +70,15 @@ async function getData(e) {
     } else {
       // delete the recent repo names
       console.log("user made different search")
-      console.log("eleeeeee");
-      for (let i = 0; i < 3; i++) {
-        let repos = document.getElementById("repo" + i);
-        repos.remove();
-      }
+      $(".repo-name").remove();
 
       // create elements with the repo names
       for (let i = 0; i < 3; i++) {
         let repoName = document.createElement("P");
+        let repos = document.createElement("div");
+        repos.className = "repo" + i; 
         repoName.className = "repo-name";
+        console.log(i)
         repoName.textContent = reposResponse[i]["name"];
         document.getElementById("repo" + i).appendChild(repoName);
       }
