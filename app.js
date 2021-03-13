@@ -35,25 +35,21 @@ async function getData(e) {
     const response = await request.json();
     console.log(inputValue);
     let hideBullets = $(".commit").show();
-
     const earlierInput = sessionStorage.getItem("latest-search");
 
-    if (firstSearch === true) {
-      console.log(sessionStorage.getItem("latest-search"));
-    }
 
     // Fetching repos of the current user
     const reposRequest = await fetch(response["repos_url"]);
     //returns repos in an array
     const reposResponse = await reposRequest.json();
-    
-
 
     // Check the amount of pages needed for the repos
     const reposPageAmount = Math.ceil(reposResponse.length / 3);
 
-    // If same user is searched for multiple times add the repos only the first time
-    if (firstSearch) {
+    // Check if the search is the same as the most recent one
+    if (inputValue === earlierInput) {
+      console.log("user made same search");
+    } else {
       console.log("inputvalue " + inputValue);
       console.log("earlier input " + earlierInput);
       console.log("first search made by the user");
@@ -75,49 +71,11 @@ async function getData(e) {
         );
         const commitsResponse = await commitsRequest.json();
 
-        const commitsRequest1 = await fetch(
-          "https://api.github.com/repos/" +
-            inputValue +
-            "/" +
-            reposResponse[1]["name"] +
-            "/commits"
-        );
-        const commitsResponse1 = await commitsRequest1.json();
-        console.log(commitsResponse)
-
-        console.log("length: " + commitsResponse.length)
-        console.log("test ")
-        
-        
-
-
-        //error when i is 2 = repository number 3
-        //error when j is 1 = commit number 2
-        //problem is in the loop conditions
-        //adding commits for every repository
         for (let j = 0; j < 3 && j < commitsResponse.length; j++) {
-          console.log("repository name " + reposResponse[i]["name"])
-          console.log(
-            "repository current commit " + commitsResponse[j]["commit"]["message"]
+          $("#repo" + i + " .commit" + j).text(
+            commitsResponse[j]["commit"]["message"]
           );
-          console.log("#repo" + i + " .repo-name .commit" + j)
-          console.log("j " + j);
-          console.log("i " + i);
-          $("#repo" + i + " .commit" + j).text(commitsResponse[j]["commit"]["message"]);
         }
-
-      }
-
-      firstSearch = false;
-    } else if (inputValue === earlierInput) {
-      console.log("user made same search");
-    } else {
-      // delete the recent repo names
-      console.log("user made different search");
-      $(".repo-name").textContent = "";
-
-      for (let i = 0; i < 3; i++) {
-        $("#repo" + i + " .repo-name").text(reposResponse[i]["name"]);
       }
     }
 
