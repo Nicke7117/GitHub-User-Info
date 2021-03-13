@@ -106,14 +106,8 @@ async function getData(e) {
           $("#repo" + i + " .commit" + j).text(commitsResponse[j]["commit"]["message"]);
         }
 
-        //$("#repo" + i + " .commit").text(re)
       }
 
-      for (let i = 0; i < 3; i++) {
-        /*       const commitsRequest = await fetch("https://api.github.com/repos/Nicke7117/Calculator/commits")
-      const commitsResponse = await commitsRequest.json()
-      console.log("commmmmits", commitsResponse) */
-      }
       firstSearch = false;
     } else if (inputValue === earlierInput) {
       console.log("user made same search");
