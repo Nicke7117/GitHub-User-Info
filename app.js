@@ -7,7 +7,7 @@ const leftBtn = document.getElementById("left");
 const rightBtn = document.getElementById("right");
 let firstSearch = true;
 let hideBullets = $(".commit").hide();
-
+let everyCommit = document.getElementsByTagName("li")
 // The page number the user is currently on
 let pageNumber = 1;
 
@@ -28,6 +28,12 @@ function previousPage() {
 
 searchbtn.addEventListener("click", getData);
 
+//Removes sessionstorage when window is reloaded
+window.onload = function(){
+  sessionStorage.removeItem("latest-search")
+  console.log("reload")
+}
+
 async function getData(e) {
   try {
     const inputValue = document.getElementById("input").value;
@@ -36,8 +42,6 @@ async function getData(e) {
     console.log(inputValue);
     let hideBullets = $(".commit").show();
     const earlierInput = sessionStorage.getItem("latest-search");
-
-
     // Fetching repos of the current user
     const reposRequest = await fetch(response["repos_url"]);
     //returns repos in an array
@@ -54,7 +58,18 @@ async function getData(e) {
       console.log("earlier input " + earlierInput);
       console.log("first search made by the user");
       sessionStorage.setItem("latest-search", "");
+      console.log(everyCommit, "esfhbnuise")
+     
+      //delete the commits of the recent user 
+      for(let i = 0; i < everyCommit.length; i++){
+        everyCommit[i].textContent = "";
+      }
+
+
       for (let i = 0; i < 3; i++) {
+
+        //Set repos names
+        $("#repo" + i + " .repo-name").text("")
         $("#repo" + i + " .repo-name").text(reposResponse[i]["name"]);
         console.log(
           ($("#repo" + i + " .repo-name").textContent =
@@ -70,6 +85,8 @@ async function getData(e) {
             "/commits"
         );
         const commitsResponse = await commitsRequest.json();
+
+
 
         for (let j = 0; j < 3 && j < commitsResponse.length; j++) {
           $("#repo" + i + " .commit" + j).text(
