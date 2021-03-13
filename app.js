@@ -5,17 +5,23 @@ const userName = document.getElementById("username");
 const website = document.getElementById("website");
 const leftBtn = document.getElementById("left");
 const rightBtn = document.getElementById("right");
-let firstSearch = true;
-let hideBullets = $(".commit").hide();
-let everyCommit = document.getElementsByTagName("li")
 // The page number the user is currently on
-let pageNumber = 1;
+const pageNumber = 1;
+const repositoryLoop = 3;
+$(".commit").hide();
 
 // changes page to next page
 
 rightBtn.addEventListener("click", nextPage);
 
 function nextPage() {
+  if(moreReposToShow){
+    for(; repositoryLoop < 3;  ){
+
+    }
+
+
+  }
   console.log("rait");
 }
 
@@ -40,7 +46,7 @@ async function getData(e) {
     const request = await fetch("https://api.github.com/users/" + inputValue);
     const response = await request.json();
     console.log(inputValue);
-    let hideBullets = $(".commit").show();
+    $(".commit").show();
     const earlierInput = sessionStorage.getItem("latest-search");
     // Fetching repos of the current user
     const reposRequest = await fetch(response["repos_url"]);
@@ -61,9 +67,7 @@ async function getData(e) {
       console.log(everyCommit, "esfhbnuise")
      
       //delete the commits of the recent user 
-      for(let i = 0; i < everyCommit.length; i++){
-        everyCommit[i].textContent = "";
-      }
+      $(".commit").text("");
 
 
       for (let i = 0; i < 3; i++) {
